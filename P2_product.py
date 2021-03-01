@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-### Fonctions ###
+# Fonctions avec message d'exception prévu en cas d'erreur
 def get_source_code_from_product_page(product_page_url):
     try:
         request_get_source_code = requests.get(product_page_url)
@@ -15,7 +15,7 @@ def get_source_code_from_product_page(product_page_url):
         print(f"Erreur lors de la reception du code source : {error}")
 
 
-# Je te fais le premier item :)
+# fonctions permettant d'extraire et de transformer le code html sur le principe d'un entonnoire. 
 
 def get_product_main_bloc(product_source_code):
     try:
