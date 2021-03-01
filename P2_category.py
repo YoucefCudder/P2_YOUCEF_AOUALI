@@ -37,7 +37,7 @@ def get_max_page_to_scrap_of_category(category_url):
     txt_max_pages = category_page_html.find("li", {"class": "current"})
     if txt_max_pages is not None: # Si il trouve le bloc de textes : "page 1 sur X"
         get_last_page_str = re.sub('Page 1 of ', '', txt_max_pages.text) # On supprime Page 1 of dans notre chaine de caracters. Il reste plus que des espaces et
-        # le numéro de la derniere page. On peut donc le convertir en INT, vu qu'il n'y a plus de lettre :)
+        # le numéro de la derniere page. On peut donc le convertir en INT, vu qu'il n'y a plus de lettre 
         max_page = int(get_last_page_str)
 
     return max_page
@@ -62,9 +62,8 @@ def scrap_page_of_category(category_url, total_pages):
         request_get_source_code = requests.get(page_to_scrap)
         category_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
 
-        # books_to_scrap = category_page_html.find_all("li", {"class": "col-xs-6 col-sm-4 col-md-3 col-lg-3"})
-
         try:
+                # extraction de toutes les informations, qui sont stockées dans une liste
                 for product_link in products_links_list:
                     request_get_source_code = requests.get(str(product_link))
                     product_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
@@ -105,7 +104,7 @@ def scrap_page_of_category(category_url, total_pages):
         except Exception as error:
             print(f"Erreur sur un bouquin : {error}")
             pass
-
+# fonction csv pour télécharger toutes les données 
     columns = ['URL_product', 'Title', 'UPC',
                'Price_including_tax', 'Price_excluding_tax',
                'Category', 'Description', 'Number_available',
@@ -121,7 +120,7 @@ def scrap_page_of_category(category_url, total_pages):
 
 if __name__ == "__main__":
     try:
-
+        # 2 catégories sont choisies, une d'une seule page et l'autre contenant plusieurs pages.
         category_urls = ['https://books.toscrape.com/catalogue/category/books/historical-fiction_4/index.html', 'https://books.toscrape.com/catalogue/category/books/travel_2/index.html']
         for category_url in category_urls:
             total_pages = get_max_page_to_scrap_of_category(category_url)
