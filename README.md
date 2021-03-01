@@ -10,7 +10,7 @@ Version Python : 3.9.1
 
 - Aller dans le dossier P2_YOUCEF_AOUALI:
 ```bash
-cd P2_YOUCEF_AOUALI
+cd ../P2_YOUCEF_AOUALI
 ```
 
 ## Environnement virtuel 
