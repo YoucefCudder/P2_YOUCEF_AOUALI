@@ -7,7 +7,7 @@ import re
 import wget
 import csv
 
-
+# fonction pour extraire les infos brutes
 def get_source_code_from_homepage(homepage_url):
     try:
         requests_get_source_code = requests.get(homepage_url)
@@ -49,7 +49,7 @@ def get_source_code_from_category_page(category_url):
     except Exception as error:
         print(f"Erreur lors de la reception du code source : {error}")
 
-
+# Fonction permettant de chercher si les catégories ont plusieurs pages, de transformer le contenu du bas de page pour le manipuler grace au package re.
 def get_max_page_to_scrap_of_category(category_url):
     max_page = 1  # Par défaut, nous avons une seule page à scrap.
 
@@ -60,7 +60,7 @@ def get_max_page_to_scrap_of_category(category_url):
     if txt_max_pages is not None:  # Si il trouve le bloc de textes : "page 1 sur X"
         get_last_page_str = re.sub('Page 1 of ', '',
                                    txt_max_pages.text)  # On supprime Page 1 of dans notre chaine de caracters. Il reste plus que des espaces et
-        # le numéro de la derniere page. On peut donc le convertir en INT, vu qu'il n'y a plus de lettre :)
+        # le numéro de la derniere page. On peut donc le convertir en INT, vu qu'il n'y a plus de lettre 
         max_page = int(get_last_page_str)
 
     return max_page
@@ -80,11 +80,12 @@ def scrap_page_of_category(category_url, total_pages):
         i += 1
         if i != 1:
             page_to_scrap = re.sub('index', f'page-{i}', category_url)
-            # ICI TU SAIS COMMENT FAIRE, tu as le code pour récupérer les données des livres :)
+           
             print(page_to_scrap)
 
         try:
-
+               # Informations extraites,  transformées et stockées dans des listes. 
+               # Je n'ai pas retiré la balise à description car certain produit sans description passent à la trappe avec l'attribut .text
             for product_link in products_links_list:
                 request_get_source_code = requests.get(str(product_link))
                 product_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
@@ -120,15 +121,15 @@ def scrap_page_of_category(category_url, total_pages):
                 get_image_url = to_get_image['src'].replace('../../', 'http://books.toscrape.com/')
                 book.append(get_image_url)
                 books.append(book)
-                # download_image = wget.download(get_image_url)
+                download_image = wget.download(get_image_url) # télécharge les images de tous les livres du site
 
 
 
 
         except Exception as error:
             print(f"Erreur sur un bouquin : {error}")
-
-    """columns = ['URL_product', 'Title', 'UPC',
+    # Fonction csv hors de la boucle pour télécharger les informations demandées dans un tableau
+    columns = ['URL_product', 'Title', 'UPC',
                        'Price_including_tax', 'Price_excluding_tax',
                        'Category', 'Description', 'Number_available',
                        'Ratings', 'Image_URL']
@@ -136,7 +137,7 @@ def scrap_page_of_category(category_url, total_pages):
         writer = csv.writer(file, delimiter=',')
         columnz = writer.writerow(columns)
 
-        csv_books = writer.writerows(books)"""
+        csv_books = writer.writerows(books)
 
 
     return books
@@ -153,10 +154,10 @@ if __name__ == "__main__":
         for category_url in category_urls:
             total_pages = get_max_page_to_scrap_of_category(category_url)
             category_page_html = get_source_code_from_category_page(category_url)
-            # dataframe = get_info_to_csv(book)
-            print(f"Pour l'url {category_url} : je trouve {total_pages} page à scrap :) ")
+           
+            print(f"Pour l'url {category_url} : je trouve {total_pages} page à scrap  ")
             books_of_category = scrap_page_of_category(category_url, total_pages)
-            #convert_csv = get_info_to_csv(category_url, total_pages)
+          )
 
             # print(books_of_category)
     except Exception as error:
