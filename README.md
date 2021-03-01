@@ -32,7 +32,8 @@ pip install -r requirements.txt
 
 ## Programme de scraping 
 
--Activer le programme de Scrapping:
+-Activer le programme de Scrapping: 
+
 ```bash
 python P2_all.py
 ```
