@@ -38,4 +38,4 @@ pip install -r requirements.txt
 python P2_all.py
 ```
 
--Récupérer les données produites : localisation dossier  de P2_YOUCEF_AOUALI) 
+-Récupérer les données produites :  dossier  P2_YOUCEF_AOUALI
