@@ -7,7 +7,10 @@ import re
 import wget
 import csv
 
-# fonction pour extraire les infos brutes
+
+"""
+fonction pour extraire les infos brutes
+"""
 def get_source_code_from_homepage(homepage_url):
     try:
         requests_get_source_code = requests.get(homepage_url)
@@ -124,8 +127,6 @@ def scrap_page_of_category(category_url, total_pages):
                 download_image = wget.download(get_image_url) # télécharge les images de tous les livres du site
 
 
-
-
         except Exception as error:
             print(f"Erreur sur un bouquin : {error}")
     # Fonction csv hors de la boucle pour télécharger les informations demandées dans un tableau
@@ -141,8 +142,6 @@ def scrap_page_of_category(category_url, total_pages):
 
 
     return books
-
-
 
 
 if __name__ == "__main__":
