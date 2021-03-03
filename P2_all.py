@@ -51,8 +51,10 @@ def get_source_code_from_category_page(category_url):
         return category_page_html
     except Exception as error:
         print(f"Erreur lors de la reception du code source : {error}")
+"""
+Fonction permettant de chercher si les catégories ont plusieurs pages, de transformer le contenu du bas de page pour le manipuler grace au package re.
+"""
 
-# Fonction permettant de chercher si les catégories ont plusieurs pages, de transformer le contenu du bas de page pour le manipuler grace au package re.
 def get_max_page_to_scrap_of_category(category_url):
     max_page = 1  # Par défaut, nous avons une seule page à scrap.
 
@@ -85,10 +87,12 @@ def scrap_page_of_category(category_url, total_pages):
             page_to_scrap = re.sub('index', f'page-{i}', category_url)
            
             print(page_to_scrap)
-
+"""
+Informations extraites,  transformées et stockées dans des listes, puis téléchargées dans un fichier csv -> processus ETL. 
+Je n'ai pas retiré la balise à description car certain produit sans description passent à la trappe avec l'attribut .text
+"""          
         try:
-               # Informations extraites,  transformées et stockées dans des listes. 
-               # Je n'ai pas retiré la balise à description car certain produit sans description passent à la trappe avec l'attribut .text
+            
             for product_link in products_links_list:
                 request_get_source_code = requests.get(str(product_link))
                 product_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
