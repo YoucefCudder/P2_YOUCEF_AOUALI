@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # coding: utf8
-
+import os
+import wget
 import re
 import csv
 import requests
@@ -9,7 +10,7 @@ from bs4 import BeautifulSoup
 
 def get_url_from_all_categories(homepage_source_code):
     """
-
+récupérer les urls des catégories
     :param homepage_source_code:
     :return:
     """
@@ -23,31 +24,30 @@ def get_url_from_all_categories(homepage_source_code):
             category_link = homepage_url + category_link
             category_links_list.append(category_link)
         return category_links_list
-    except Exception as error:
-        print(f"Erreur lors de la reception urls des catégories : {error}")
+    except Exception as error_:
+        print(f"Erreur lors de la reception urls des catégories : {error_}")
 
 
-def get_source_code_from_category_page(category_url):
+def get_source_code_from_category_page():
     """
 
-    :param category_url:
     :return:
     """
     try:
         request_get_source_code = requests.get(category_url)
-        category_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
-        return category_page_html
-    except Exception as error:
-        print(f"Erreur lors de la reception du code source : {error}")
+        category_page_html_ = BeautifulSoup(request_get_source_code.text, "html.parser")
+        return category_page_html_
+    except Exception as _error_:
+        print(f"Erreur lors de la reception du code source : {_error_}")
 
 
-def get_max_page_to_scrap_of_category(category_url):
+def get_max_page_to_scrap_of_category(_category_url_):
     max_page = 1  # Par défaut, nous avons une seule page à scrap.
 
     request_get_source_code = requests.get(category_url)
-    category_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
+    category_page_html__ = BeautifulSoup(request_get_source_code.text, "html.parser")
 
-    txt_max_pages = category_page_html.find("li", {"class": "current"})
+    txt_max_pages = category_page_html__.find("li", {"class": "current"})
     if txt_max_pages is not None:  # Si il trouve le bloc de textes : "page 1 sur X"
         get_last_page_str = re.sub(
             "Page 1 of ", "", txt_max_pages.text
@@ -58,11 +58,10 @@ def get_max_page_to_scrap_of_category(category_url):
     return max_page
 
 
-def scrap_page_of_category(category_url, total_pages):
+def scrap_page_of_category(__category_url):
     """
 
-    :param category_url:
-    :param total_pages:
+
     :return:
     """
     global category_page_html
@@ -140,8 +139,8 @@ def scrap_page_of_category(category_url, total_pages):
                 )  # télécharge les images de tous les livres de la catégorie
                 books.append(book)
 
-        except Exception as error:
-            print(f"Erreur sur un bouquin : {error}")
+        except Exception as error__:
+            print(f"Erreur sur un bouquin : {error__}")
             pass
     # fonction csv pour télécharger toutes les données
     columns = [
@@ -175,12 +174,12 @@ if __name__ == "__main__":
         ]
         for category_url in category_urls:
             total_pages = get_max_page_to_scrap_of_category(category_url)
-            category_page_html = get_source_code_from_category_page(category_url)
+            category_page_html = get_source_code_from_category_page()
 
             print(
                 f"Pour l'url {category_url} : je trouve {total_pages} page à scrap :) "
             )
-            books_of_category = scrap_page_of_category(category_url, total_pages)
+            books_of_category = scrap_page_of_category(category_url)
             print(books_of_category)
 
     except Exception as error:

@@ -7,10 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 import wget
 
-"""
-fonction pour extraire les infos brutes
-"""
 
+# fonction pour extraire les infos brutes
 
 def get_source_code_from_homepage():
     """
@@ -24,73 +22,73 @@ récupérer le code source
         )
 
         return homepage_code_souce
-    except Exception as error:
-        print(f"Erreur lors de la reception du code source : {error}")
+    except Exception as error_:
+        print(f"Erreur lors de la reception du code source : {error_}")
 
 
-def get_bloc_products_from_category_page(HOMEPAGE_CODE_SOURCE):
+def get_bloc_products_from_category_page(homepage_code_source):
     """
     récuperer le bloc prouduit dans le code source
-    :param HOMEPAGE_CODE_SOURCE:
+    :param homepage_code_source:
     :return:
     """
     try:
-        bloc_products = HOMEPAGE_CODE_SOURCE.find_all(
+        bloc_products = homepage_code_source.find_all(
             "article", {"class": "product_pod"}
         )
 
         return bloc_products
-    except Exception as error:
-        print(f"Erreur lors de la reception des produits de la catégorie :{error}")
+    except Exception as error__:
+        print(f"Erreur lors de la reception des produits de la catégorie :{error__}")
 
 
-def get_url_from_all_categories(homepage_source_code):
+def get_url_from_all_categories(homepage_source_code_):
     """
     récupérer les urls des catégories
-    :param homepage_source_code:
+    :param homepage_source_code_:
     :return:
     """
     category_links_list = []
     try:
-        find_category_links = homepage_source_code.find("ul", {"class": "nav nav-list"})
-        find_category_links = find_category_links.find_all("li")[1:57]
-        for links in find_category_links:
+        find_category_links_ = homepage_source_code_.find("ul", {"class": "nav nav-list"})
+        find_category_links_ = find_category_links_.find_all("li")[1:57]
+        for links in find_category_links_:
             category_link = links.find("a")["href"]
             category_link = HOMEPAGE_URL + category_link
             category_links_list.append(category_link)
         return category_links_list
-    except Exception as error:
-        print(f"Erreur lors de la reception urls des catégories : {error}")
+    except Exception as _error:
+        print(f"Erreur lors de la reception urls des catégories : {_error}")
 
 
-def get_source_code_from_category_page(category_url):
+def get_source_code_from_category_page(category_url_):
     """
     récupérer les codes sources des pages catégories
-    :param category_url:
+    :param category_url_:
     :return:
     """
 
     try:
-        request_get_source_code = requests.get(category_url)
+        request_get_source_code = requests.get(category_url_)
         category_page_html = BeautifulSoup(request_get_source_code.text, "html.parser")
         return category_page_html
-    except Exception as error:
-        print(f"Erreur lors de la reception du code source : {error}")
+    except Exception as _error_:
+        print(f"Erreur lors de la reception du code source : {_error_}")
 
 
-def get_max_page_to_scrap_of_category(category_url):
+def get_max_page_to_scrap_of_category(_category_url):
     """
     récupérer toutes les pages en détectant les pages suivantes
-    :param category_url:
+    :param _category_url:
     :return:
     """
 
     max_page = 1  # Par défaut, nous avons une seule page à scrap.
 
-    request_get_source_code = requests.get(category_url)
-    CATEGORY_PAGE_HTML = BeautifulSoup(request_get_source_code.text, "html.parser")
+    request_get_source_code = requests.get(_category_url)
+    CATEGORY_PAGE_HTML_ = BeautifulSoup(request_get_source_code.text, "html.parser")
 
-    txt_max_pages = CATEGORY_PAGE_HTML.find("li", {"class": "current"})
+    txt_max_pages = CATEGORY_PAGE_HTML_.find("li", {"class": "current"})
     if txt_max_pages is not None:  # Si il trouve le bloc de textes : "page 1 sur X"
         get_last_page_str = re.sub("Page 1 of ", "", txt_max_pages.text)
         # On supprime Page 1 of dans notre chaine de caracters. Il reste plus que des espaces et
@@ -101,10 +99,10 @@ def get_max_page_to_scrap_of_category(category_url):
     return max_page
 
 
-def scrap_page_of_category(category_url, total_pages):
+def scrap_page_of_category(category_url_, total_pages):
     """
     scraper les produits en passant par les pages des catégories
-    :param category_url:
+    :param category_url_:
     :param total_pages:
     :return:
     """
@@ -121,7 +119,7 @@ def scrap_page_of_category(category_url, total_pages):
     while i < total_pages:
         i += 1
         if i != 1:
-            page_to_scrap = re.sub("index", f"page-{i}", category_url)
+            page_to_scrap = re.sub("index", f"page-{i}", category_url_)
 
             print(page_to_scrap)
 
@@ -180,8 +178,8 @@ def scrap_page_of_category(category_url, total_pages):
                     get_image_url, out="image"
                 )  # télécharge les images de tous les livres du site
                 books.append(book)
-        except Exception as error:
-            print(f"Erreur sur un bouquin : {error}")
+        except Exception as error__:
+            print(f"Erreur sur un bouquin : {error__}")
     # Fonction csv hors de la boucle pour télécharger les informations demandées dans un tableau
 
     columns = [
