@@ -14,12 +14,12 @@ fonction pour extraire les infos brutes
 
 def get_source_code_from_homepage():
     """
-
+récupérer le code source
     :return:
     """
     try:
         requests_get_source_code = requests.get(HOMEPAGE_URL)
-        homepage_code_souce = BeautifulSoup(
+        homepage_code_souce: BeautifulSoup = BeautifulSoup(
             requests_get_source_code.text, "html.parser"
         )
 
@@ -28,14 +28,14 @@ def get_source_code_from_homepage():
         print(f"Erreur lors de la reception du code source : {error}")
 
 
-def get_bloc_products_from_category_page(homepage_source_code):
+def get_bloc_products_from_category_page(HOMEPAGE_CODE_SOURCE):
     """
     récuperer le bloc prouduit dans le code source
-    :param homepage_source_code:
+    :param HOMEPAGE_CODE_SOURCE:
     :return:
     """
     try:
-        bloc_products = homepage_source_code.find_all(
+        bloc_products = HOMEPAGE_CODE_SOURCE.find_all(
             "article", {"class": "product_pod"}
         )
 
@@ -60,7 +60,6 @@ def get_url_from_all_categories(homepage_source_code):
             category_links_list.append(category_link)
         return category_links_list
     except Exception as error:
-        global ERROR
         print(f"Erreur lors de la reception urls des catégories : {error}")
 
 
@@ -79,19 +78,13 @@ def get_source_code_from_category_page(category_url):
         print(f"Erreur lors de la reception du code source : {error}")
 
 
-"""
-Fonction permettant de chercher si les catégories ont plusieurs pages, de transformer 
-le contenu du bas de page pour le manipuler grace au package re.
-"""
-
-
 def get_max_page_to_scrap_of_category(category_url):
     """
     récupérer toutes les pages en détectant les pages suivantes
     :param category_url:
     :return:
     """
-    global CATEGORY_PAGE_HTML
+
     max_page = 1  # Par défaut, nous avons une seule page à scrap.
 
     request_get_source_code = requests.get(category_url)
@@ -133,12 +126,7 @@ def scrap_page_of_category(category_url, total_pages):
             print(page_to_scrap)
 
         try:
-            """
-            Informations extraites,  transformées et stockées dans des listes,
-            puis téléchargées dans un fichier csv-> processus ETL.
-            Je n'ai pas retiré la balise à description car certain produit
-            sans description passent à la trappe avec l'attribut .text
-            """
+
             for product_link in products_links_list:
                 request_get_source_code = requests.get(str(product_link))
                 product_page_html = BeautifulSoup(
@@ -164,8 +152,8 @@ def scrap_page_of_category(category_url, total_pages):
 
                 get_category = (
                     get_inner_page.find("ul", {"class": "breadcrumb"})
-                        .find_all("li")[2]
-                        .text
+                    .find_all("li")[2]
+                    .text
                 )
                 book.append(get_category)
                 get_description = get_inner_page.find("p", {"class": ""})
@@ -186,16 +174,16 @@ def scrap_page_of_category(category_url, total_pages):
                     "../../", "http://books.toscrape.com/"
                 )
                 book.append(get_image_url)
-                books.append(book)
-                os.makedirs('image', exist_ok=True)
-                with open('image', 'w') as file:
-                    wget.download(
-                        get_image_url
-                    )  # télécharge les images de tous les livres du site
 
+                os.makedirs("image", exist_ok=True)
+                wget.download(
+                    get_image_url, out="image"
+                )  # télécharge les images de tous les livres du site
+                books.append(book)
         except Exception as error:
             print(f"Erreur sur un bouquin : {error}")
     # Fonction csv hors de la boucle pour télécharger les informations demandées dans un tableau
+
     columns = [
         "URL_product",
         "Title",
@@ -211,8 +199,7 @@ def scrap_page_of_category(category_url, total_pages):
     with open("book_infos.csv", "a", encoding="utf-8-sig", newline="") as file:
         writer = csv.writer(file, delimiter=",")
         writer.writerow(columns)
-        for book in books:
-            writer.writerow(book)
+        writer.writerows(books)
 
     return books
 
@@ -226,9 +213,8 @@ if __name__ == "__main__":
         for category_url in category_urls:
             TOTAL_PAGES = get_max_page_to_scrap_of_category(category_url)
             CATEGORY_PAGE_HTML = get_source_code_from_category_page(category_url)
-
+            scrap_page_of_category(category_url, TOTAL_PAGES)
             print(f"Pour l'url {category_url} : je trouve {TOTAL_PAGES} page à scrap  ")
-            books_of_category = scrap_page_of_category(category_url, TOTAL_PAGES)
 
             # print(books_of_category)
     except Exception as error:

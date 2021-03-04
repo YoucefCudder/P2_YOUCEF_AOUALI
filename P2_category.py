@@ -134,7 +134,10 @@ def scrap_page_of_category(category_url, total_pages):
                     "../../", "http://books.toscrape.com/"
                 )
                 book.append(get_image_url)
-
+                os.makedirs("image_category", exist_ok=True)
+                wget.download(
+                    get_image_url, out="image_category"
+                )  # télécharge les images de tous les livres de la catégorie
                 books.append(book)
 
         except Exception as error:
