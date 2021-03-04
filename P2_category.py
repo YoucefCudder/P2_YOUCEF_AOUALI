@@ -20,6 +20,8 @@ def get_url_from_all_categories(homepage_source_code):
         return category_links_list
     except Exception as error:
         print(f"Erreur lors de la reception urls des catégories : {error}")
+
+
 def get_source_code_from_category_page(category_url):
     try:
         request_get_source_code = requests.get(category_url)
@@ -109,11 +111,11 @@ def scrap_page_of_category(category_url, total_pages):
                'Price_including_tax', 'Price_excluding_tax',
                'Category', 'Description', 'Number_available',
                'Ratings', 'Image_URL']
-    with open('book_category.csv', 'a', encoding='utf-8', newline='') as file:
+    with open('book_category.csv', 'a', encoding='utf-8-sig', newline='') as file:
         writer = csv.writer(file, delimiter=',')
-        columnz = writer.writerow(columns)
+        writer.writerow(columns)
         for book in books:
-            csv_books = writer.writerow(book)
+            writer.writerow(book)
     return books
 
 # execution des fonctions
