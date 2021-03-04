@@ -6,6 +6,11 @@ from bs4 import BeautifulSoup
 
 # Fonctions avec message d'exception prévu en cas d'erreur
 def get_source_code_from_product_page(product_page_url):
+    """
+
+    :param product_page_url:
+    :return:
+    """
     try:
         request_get_source_code = requests.get(product_page_url)
         product_source_code = BeautifulSoup(request_get_source_code.text, "html.parser")
@@ -15,11 +20,19 @@ def get_source_code_from_product_page(product_page_url):
         print(f"Erreur lors de la reception du code source : {error}")
 
 
-# fonctions permettant d'extraire et de transformer le code html sur le principe d'un entonnoire. 
+# fonctions permettant d'extraire et de transformer le code html sur le principe d'un entonnoire.
+
 
 def get_product_main_bloc(product_source_code):
+    """
+
+    :param product_source_code:
+    :return:
+    """
     try:
-        product_main_bloc = product_source_code.find('div', {'class': 'col-sm-6 product_main'})
+        product_main_bloc = product_source_code.find(
+            "div", {"class": "col-sm-6 product_main"}
+        )
 
         return product_main_bloc
     except Exception as error:
@@ -27,18 +40,26 @@ def get_product_main_bloc(product_source_code):
 
 
 def get_other_from_inner_page(product_source_code):
+    """
+
+    :param product_source_code:
+    :return:
+    """
     try:
-        product_inner_page = product_source_code.find('div', {'class': 'container-fluid page'})
+        product_inner_page = product_source_code.find(
+            "div", {"class": "container-fluid page"}
+        )
 
         return product_inner_page
     except Exception as error:
         print(f"Erreur lors de la récupération du code inner :{error}")
 
 
-
 def get_title_from_product_page(product_inner_page):
     try:
-        product_title = product_inner_page.find('h1')  #  attrs={'class': 'col-sm-6 product_main'})
+        product_title = product_inner_page.find(
+            "h1"
+        )
         print(product_title.text)
 
         return product_title.text
@@ -47,8 +68,13 @@ def get_title_from_product_page(product_inner_page):
 
 
 def get_price_tax_incl_from_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_price_tax_incl = product_inner_page.find_all('td')[2]
+        product_price_tax_incl = product_inner_page.find_all("td")[2]
 
         print(product_price_tax_incl.text)
         return product_price_tax_incl
@@ -57,8 +83,13 @@ def get_price_tax_incl_from_page(product_inner_page):
 
 
 def get_price_tax_excl_from_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_price_tax_excl = product_inner_page.find_all('td')[3]
+        product_price_tax_excl = product_inner_page.find_all("td")[3]
 
         print(product_price_tax_excl.text)
         return product_price_tax_excl
@@ -67,8 +98,13 @@ def get_price_tax_excl_from_page(product_inner_page):
 
 
 def get_upc_from_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_upc = product_inner_page.find_all('td')[0]
+        product_upc = product_inner_page.find_all("td")[0]
         print(product_upc.text)
         return product_upc
     except Exception as error:
@@ -76,8 +112,13 @@ def get_upc_from_page(product_inner_page):
 
 
 def get_number_available_from_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_number_available = product_inner_page.find_all('td')[5]
+        product_number_available = product_inner_page.find_all("td")[5]
 
         print(product_number_available.text)
         return product_number_available
@@ -86,9 +127,14 @@ def get_number_available_from_page(product_inner_page):
 
 
 def get_rating_from_main_bloc(product_main_bloc):
+    """
+
+    :param product_main_bloc:
+    :return:
+    """
     try:
         class_name = []
-        for element in product_main_bloc.find_all(class_='star-rating'):
+        for element in product_main_bloc.find_all(class_="star-rating"):
             class_name.extend(element["class"])
 
         print(class_name[1] + " out of five")
@@ -98,9 +144,14 @@ def get_rating_from_main_bloc(product_main_bloc):
 
 
 def get_category_from_inner_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_category = product_inner_page.find('ul', {'class': 'breadcrumb'})
-        product_category = product_category.find_all('li')[2]
+        product_category = product_inner_page.find("ul", {"class": "breadcrumb"})
+        product_category = product_category.find_all("li")[2]
 
         print(product_category.text)
         return product_category
@@ -109,8 +160,13 @@ def get_category_from_inner_page(product_inner_page):
 
 
 def get_description_from_inner_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_description = product_inner_page.find('p', {'class': ''}).text
+        product_description = product_inner_page.find("p", {"class": ""}).text
 
         print(product_description)
         return product_description
@@ -119,22 +175,31 @@ def get_description_from_inner_page(product_inner_page):
 
 
 def get_image_url_from_inner_page(product_inner_page):
+    """
+
+    :param product_inner_page:
+    :return:
+    """
     try:
-        product_image_url = product_inner_page.find('div', {'class': 'item active'})
-        product_image_url = product_image_url.find('img')
-        product_image_url = product_image_url['src'].replace('../../', 'http://books.toscrape.com/')
+        product_image_url = product_inner_page.find("div", {"class": "item active"})
+        product_image_url = product_image_url.find("img")
+        product_image_url = product_image_url["src"].replace(
+            "../../", "http://books.toscrape.com/"
+        )
 
         print(product_image_url)
         return product_image_url
     except Exception as error:
-        print(f"Erreur lors de la récupération de l\'url de l'image :{error}")
+        print(f"Erreur lors de la récupération de l'url de l'image :{error}")
 
 
 # Executions du programme
 
 if __name__ == "__main__":
     try:
-        product_page_url = "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+        PRODUCT_PAGE_URL = (
+            "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
+        )
         product_source_code = get_source_code_from_product_page(product_page_url)
         product_main_bloc = get_product_main_bloc(product_source_code)
         product_inner_page = get_other_from_inner_page(product_source_code)
